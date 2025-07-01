@@ -37,7 +37,4 @@ app.use("/api/v1/application" , applicationRoute);
 // "http://localhost:8000/api/v1/user/login"
 // "http://localhost:8000/api/v1/user/profile/update"
 
-app.listen(PORT , ()=>{
-    connectDB();
-    console.log(`Server running at ${PORT}`);
-})
+app.listen(PORT)
