@@ -9,6 +9,7 @@ import jobRoute from "./routes/job.route.js"
 import applicationRoute from "./routes/application.route.js"
 dotenv.config({});
 
+connectDB();
 
 
 const PORT = process.env.PORT || 5000;

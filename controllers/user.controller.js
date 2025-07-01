@@ -13,18 +13,27 @@ export const register = async (req, res) => {
                 message: "Something is missing",
                 success: false
             });
-        };
+        }
+
         const file = req.file;
+        if (!file) {
+            return res.status(400).json({
+                message: "Profile image is required",
+                success: false
+            });
+        }
+
         const fileUri = getDataUri(file);
-        const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+        const cloudResponse = await cloudinary.uploader.upload(fileUri);
 
         const user = await User.findOne({ email });
         if (user) {
             return res.status(400).json({
                 message: 'User already exist with this email.',
                 success: false,
-            })
+            });
         }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
@@ -42,10 +51,16 @@ export const register = async (req, res) => {
             message: "Account created successfully.",
             success: true
         });
+
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Server error",
+            success: false
+        });
     }
-}
+};
+
 export const login = async (req, res) => {
     try {
         const { email, password, role } = req.body;
@@ -132,7 +147,7 @@ export const updateProfile = async (req, res) => {
         // Only process file if it exists
         if (file) {
             const fileUri = getDataUri(file);
-            cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+            cloudResponse = await cloudinary.uploader.upload(fileUri);
         }
 
         const skillsArray = skills ? skills.split(",").map(skill => skill.trim()) : [];
